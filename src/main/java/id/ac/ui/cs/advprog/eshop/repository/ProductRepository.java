@@ -22,6 +22,17 @@ public class ProductRepository {
         return product;
     }
 
+    public Product edit(Product product) {
+        if (product == null || product.getProductId() == null) return null;
+        for (int i = 0; i < productData.size(); i++) {
+            if (product.getProductId().equals(productData.get(i).getProductId())) {
+                productData.set(i, product);
+                return product;
+            }
+        }
+        return null;
+    }
+
     public Iterator<Product> findAll() {
         return productData.iterator();
     }
