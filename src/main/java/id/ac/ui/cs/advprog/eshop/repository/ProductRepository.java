@@ -11,12 +11,10 @@ import java.util.Optional;
 @Repository
 public class ProductRepository {
     private List<Product> productData = new ArrayList<>();
-    private int globalIndex = 1;
 
     public Product create(Product product) {
         if (product.getProductId() == null){
-            product.setProductId(Integer.toString((globalIndex)));
-            globalIndex++;
+            product.setProductId(java.util.UUID.randomUUID().toString());
         }
         productData.add(product);
         return product;

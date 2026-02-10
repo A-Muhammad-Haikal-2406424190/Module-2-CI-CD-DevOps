@@ -1,50 +1,54 @@
 package id.ac.ui.cs.advprog.eshop.functional;
 
 import io.github.bonigarcia.seljup.SeleniumJupiter;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
 class CreateProductFunctionalTest {
-
     @LocalServerPort
     private int serverPort;
-
     @Value("${app.baseUrl:http://localhost}")
     private String testBaseUrl;
-
     private String baseUrl;
-
     @BeforeEach
     void setupTest() {
-        baseUrl = String.format("%s:%d", testBaseUrl, serverPort);
+        baseUrl = String.format("%s:%d/product/create", testBaseUrl, serverPort);
+    }
+
+    @Test
+    void pageTitle_isCorrect(ChromeDriver driver) throws Exception {
+        driver.get(baseUrl);
+        String pageTitle = driver.getTitle();
+        assertEquals("Create New Product", pageTitle);
     }
 
     @Test
     void createProduct_isSuccessful(ChromeDriver driver) throws Exception {
-        driver.get(baseUrl + "/product/create");
-        WebElement nameInput = driver.findElement(By.id("nameInput"));
-        nameInput.sendKeys("Sampo Cap Bambang");
-        WebElement quantityInput = driver.findElement(By.id("quantityInput"));
-        quantityInput.sendKeys("100");
-        WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
+        driver.get(baseUrl);
+        String expectedProductName = "Sampo Cap Bambang";
+        int expectedProductQuantity = 50;
+        WebElement nameInputField = driver.findElement(By.id("nameInput"));
+        nameInputField.sendKeys(expectedProductName);
+        WebElement quantityInputField = driver.findElement(By.id("quantityInput"));
+        quantityInputField.sendKeys(String.valueOf(expectedProductQuantity));
+        WebElement submitButton = driver.findElement(By.tagName("button"));
         submitButton.click();
-        String currentUrl = driver.getCurrentUrl();
-        assertEquals(baseUrl + "/product/list", currentUrl);
-        WebElement productName = driver.findElement(By.xpath("//td[contains(text(), 'Sampo Cap Bambang')]"));
-        WebElement productQuantity = driver.findElement(By.xpath("//td[contains(text(), '100')]"));
-        assertEquals("Sampo Cap Bambang", productName.getText());
-        assertEquals("100", productQuantity.getText());
+        String listUrl = driver.getCurrentUrl();
+        assertEquals(String.format("%s:%d/product/list", testBaseUrl, serverPort), listUrl);
+        assertFalse(driver.findElements(By.xpath("//*[contains(text(), '" + expectedProductName + "')]")).isEmpty());
+        assertFalse(driver.findElements(By.xpath("//*[contains(text(), '" + expectedProductQuantity + "')]")).isEmpty());
     }
 }
