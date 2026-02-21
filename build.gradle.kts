@@ -8,6 +8,7 @@ plugins {
     jacoco
     id("org.springframework.boot") version "3.5.10"
     id("io.spring.dependency-management") version "1.1.7"
+    id("org.sonarqube") version "7.2.2.6593"
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -17,6 +18,17 @@ description = "eshop"
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "A-Muhammad-Haikal-2406424190_Module-2-CI-CD-DevOps")
+        property("sonar.organization", "a-muhammad-haikal-2406424190")
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
+        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
+        )
     }
 }
 
