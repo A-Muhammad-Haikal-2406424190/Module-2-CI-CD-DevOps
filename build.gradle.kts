@@ -23,8 +23,8 @@ java {
 
 sonar {
     properties {
-        property("sonar.projectKey", "advprog-2026-A12-project_MySawit-AUTH")
-        property("sonar.organization", "A-Muhammad-Haikal-2406424190_Module-2-CI-CD-DevOps")
+        property("sonar.projectKey", "A-Muhammad-Haikal-2406424190_Module-2-CI-CD-DevOps")
+        property("sonar.organization", "a-muhammad-haikal-2406424190")
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
