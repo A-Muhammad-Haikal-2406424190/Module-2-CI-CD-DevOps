@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -182,5 +181,29 @@ class ProductRepositoryTest {
         Product remainingProduct = productIterator.next();
         assertEquals(product2.getProductId(), remainingProduct.getProductId());
         assertFalse(productIterator.hasNext());
+    }
+
+    @Test
+    void testCreateGeneratesIdWhenIdIsNull() {
+        Product product = new Product();
+        product.setProductName("Produk Tanpa Id");
+        product.setProductQuantity(5);
+
+        Product createdProduct = productRepository.create(product);
+
+        assertNotNull(createdProduct.getProductId());
+        assertFalse(createdProduct.getProductId().isBlank());
+    }
+
+    @Test
+    void testEditNullProduct() {
+        Product result = productRepository.edit(null);
+        assertNull(result);
+    }
+
+    @Test
+    void testFindByIdNotFound() {
+        Optional<Product> missingProduct = productRepository.findById("missing-id");
+        assertTrue(missingProduct.isEmpty());
     }
 }
