@@ -25,7 +25,7 @@ sonar {
     properties {
         property("sonar.projectKey", "A-Muhammad-Haikal-2406424190_Module-2-CI-CD-DevOps")
         property("sonar.organization", "a-muhammad-haikal-2406424190")
-        property("sonar.sources", "src/main/java")
+        property("sonar.sources", "src/main")
         property("sonar.tests", "src/test/java")
         property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
         )
@@ -81,6 +81,10 @@ tasks.test {
 }
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+    reports{
+        xml.required.set(true)
+        html.required.set(true)
+    }
 }
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
