@@ -24,6 +24,48 @@ tasks.jacocoTestReport {
 Sehingga sonarcloud dapat menerima output jacoco tersebut
 ![coverageSucced](assets/coverageSucced.png)
 
+Untuk issue yang saya temukan pada sonarcloud adalah 15 issue
+![issue](assets/issue.png)
+Untuk listnya sendiri
+![issue1](assets/issue1.png)
+![issue2](assets/issue2.png)
+![issue3](assets/issue3.png)
+![issue4](assets/issue4.png)
+![issue5](assets/issue5.png)
+![issue6](assets/issue6.png)
+![issue7](assets/issue7.png)
+![issue8](assets/issue8.png)
+![issue9](assets/issue9.png)
+![issue10](assets/issue10.png)
+![issue11](assets/issue11.png)
+![issue12](assets/issue12.png)
+![issue13](assets/issue13.png)
+![issue14](assets/issue14.png)
+![issue15](assets/issue15.png)
+
+Untuk issue 1 saya cukup menghilangkan public pada class ini
+```
+public class ProductTest
+```
+Lalu untuk issue 2 - 5 saya cukup menghapus exception dan module yang tidak digunakan pada unitest
+```
+void pageTitle_isCorrect(ChromeDriver driver) throws Exception
+```
+Lalu untuk issue 6 - 12 saya cukup menghapus module import dan fucntion yang tidak digunakan yang tidak digunakan
+```
+@BeforeEach
+    void setUp() {} // contohnya function ini
+```
+Lalu untuk  issue 13 - 15 saya mengubah dari yang menggunakan @autowired menjadi
+```
+private final ProductService service;
+public ProductController(ProductService service) {
+    this.service = service;
+} // ini terjadi karena @autowired rawan terjadi class injection
+```
+Sejauh ini perbaikan yang saya lakukan adalah untuk menjaga maintainability dari repo ini
+![issueDone](assets/issueDone.png)
+
 > Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current
 implementation has met the definition of Continuous Integration and Continuous
 Deployment? Explain the reasons (minimum 3 sentences)!
