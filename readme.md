@@ -1,18 +1,32 @@
-## Reflection 1
-dalam pengimplementasi fitur baru  menggunakan spring boot, 
-saya berfokus pada peningkatan kualitas kode melalui penerapan prinsip Clean Code. 
-Saya memastikan setiap fungsi bersifat modular dan juga menggunakan penamaan yang deskriptif agar lebih mudah dibaca. 
-Lalu, Untuk menjaga standar proyek, fitur edit dan delete juga dikembangkan dengan prinsip DRY guna meminimalisir redundansi.
-Dalam manajemen kode, saya menggunakan feature branch workflow untuk menjaga stabilitas branch utama. Meski demikian, 
-saya juga mengidentikasi beberapa kerentanan yang ada pada kode saya, salah satu yang saya temukan adalah tidak adanya validasi input data yang masuk ketika create maupun edit product. 
-Sebagai langkah mitigasi ke depan, saya berencana untuk membuat validasi input pada page create maunpun edit product .
+# Reflection
 
-## Reflection 2
-Setelah menulis beberapa unit test pada proyek saya. Saya merasa bahwa unit test merupakan salah satu hal penting untuk dapat memanggkas waktu testing.
-Maksud saya, hanya dengan beberapa baris kode saya sudah bisa melakukan testing yang kalau dilakukan secara manual akan memakan waktu yang lumayan banyak. 
-Lalu terkait banyaknya unit test sebenarnya tidak ada standar pasti seberapa banyak kita harus menulis unit test.
-Menurut saya, unit test bukan dinilai dari seberapa banyak test yang kita lakukan, namun adalah seberapa luas cakupan yang tercoverage dalam test tersebut.
-Kemudian, 100% coverage bukan berarti bahwa kode ini telah bebas dari bug karena coverage sendiri hanya menilai dari seberaba banyak baris kode yang dieksekusi oleh test.
-Hal ini menyebabkan dapat terjadinya bug, misalnya ketika kode tidak memliki validasi NULL, maka ketika lakukan testing dan coverage mencapai 100%, bukan berarti kode kita akan aman ketika terdapat input null.
-Lalu untuk pembuatan functional test class baru, menurut saya hal ini melanggar konsep DRY karena kondisi ini menyebabkan kode menjadi redundan dan menurunkan kualitas kode.
-Untuk mengatasi hal tersebut, kita dapat membuat file baru yang berisi base class dari test yang isinya dapat berupa variable/funsi dasar yang nantinya dapat digunakan untuk test lain.
+> List the code quality issue(s) that you fixed during the exercise and explain your strategy
+on fixing them.
+
+Untuk pertama, mungkin bukan fixing code quality, namun fixing config pada sonarcloud itu sendiri, yaitu pada warning yang terjadi karena static file tidak include analysis sonalcloud
+![warning](assets/warningAnalysis.png)
+Sehingga yang saya lakukan adalah mengubah config sonarloud pada `build.gradle.kts` agar include static file
+```
+property("sonar.sources", "src/main")
+```
+Lalu terdapat masalah lagi pada config sonarcloud, dimana kalau kita lihat pada dashboard sonarcloud
+![coverageError](assets/coverageError.png)
+Dapat dilihat bahwa coverage pada repo ini 0% padahal pada report jacoco sendiri coveragenya sudah 100%. Dan setelah saya cari tahu lebih lanjut, ternyata sonarcloud hanya menerima input test berbentuk xml sedangkan default test dari jacoco sendiri outputnya adalah html. Oleh kerena itu saya mengubah config jacoco agar output xml juga
+```
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports{
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+```
+Sehingga sonarcloud dapat menerima output jacoco tersebut
+![coverageSucced](assets/coverageSucced.png)
+
+> Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current
+implementation has met the definition of Continuous Integration and Continuous
+Deployment? Explain the reasons (minimum 3 sentences)!
+
+
+Berdasarkan file yml workflow saya, dapat dilihat bahwa worklow tersebut merupakan CI karena workflow tersenut akan otomatis mengeeksekusi code quality, code coverage test dan security test saat push ataupun pull request sehingga dapat diartikan sebagai Continuous Integration lalu pada CD sendiri, menurut saya repo ini sudah terdapat integrasi CD karena saya menggunakan auto deploy yang sudah otomatis akan deploy ketika terdapat push pada main branch, namun bagi saya ini bukan merupakan pipeline CD yang baik, dikarenakan belum adanya integrasi yang baik antara CI dan CDnya
